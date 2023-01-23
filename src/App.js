@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./component/Home/Home";
+import UserDetails from "./component/UserDetails/UserDetails";
+import { useState } from "react";
 
 function App() {
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      loader: async () => {
+        return fetch("https://jsonplaceholder.typicode.com/users");
+      },
+      element: <Home></Home>,
+    },
+    {
+      path:"/data/:dataId",
+      loader: async ({ params }) => {
+        return fetch(
+          `https://jsonplaceholder.typicode.com/users/${params.dataId}`
+        );
+      },
+      element:<UserDetails></UserDetails>
+    }
+  ]);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <RouterProvider router={router}></RouterProvider>
     </div>
   );
 }
